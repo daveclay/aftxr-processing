@@ -21,7 +21,7 @@ public class SpectrographTest extends PApplet {
     // A smoothing factor of 1.0 means no smoothing (only the data from the newest analysis
     // is rendered), decrease the factor down towards 0.0 to have the visualisation update
     // more slowly, which is easier on the eye.
-    float smoothingFactor = 0.9f;
+    float smoothingFactor = 0.99f;
 
     // Create a vector to store the smoothed spectrum data in
     float[] sum = new float[bands];
@@ -32,7 +32,7 @@ public class SpectrographTest extends PApplet {
     // Declare a scaling factor for adjusting the height of the rectangles
     float scale = 3;
     // Declare a drawing variable for calculating the width of the
-    float barWidth;
+    int barWidth;
     float lowPowerSum = 0f;
 
     int spectrographHeight = 400;
@@ -47,10 +47,10 @@ public class SpectrographTest extends PApplet {
         colorMode(HSB, 1, 1, 1, 1);
 
         // Calculate the width of the rects depending on how many bands we have
-        barWidth = width/(float) bandsToDisplay;
+        barWidth = (int) (width/((float) bandsToDisplay));
 
         // Load and play a soundfile and loop it.
-        sample = new SoundFile(this, "Rigit Body III video.wav");
+        sample = new SoundFile(this, "Base of the Spine.wav");
         sample.loop();
 
         // Create the FFT analyzer and connect the playing soundfile to it.
@@ -67,12 +67,12 @@ public class SpectrographTest extends PApplet {
             // Smooth the FFT spectrum data by smoothing factor
             sum[i] += (fft.spectrum[i] - sum[i]) * smoothingFactor;
 
-            if (i > numberOfLowBandsToSkip + 2 && i < numberOfLowBandsToSkip + 12) {
+            if (i > numberOfLowBandsToSkip + 3 && i < numberOfLowBandsToSkip + 10) {
                 lowPowerSum += sum[i];
             }
         }
 
-        lowPowerSum = lowPowerSum / 10f;
+        lowPowerSum = lowPowerSum / 7f;
 
         if (lowPowerSum > .15) {
             background(.99f, 1, .6f);
@@ -81,26 +81,24 @@ public class SpectrographTest extends PApplet {
         }
 
         noStroke();
-
         textSize(20);
         fill(1, 1, 1);
         text(lowPowerSum, 50, 600);
 
-
-        for (int i = numberOfLowBandsToSkip; i < bands; i++) {
-            float power = sum[i];
+        for (int i = 0; i < bandsToDisplay; i++) {
+            float power = sum[i + numberOfLowBandsToSkip];
             fill(power * .45f, 1, 1, power * 10);
 
-            float x = (i - numberOfLowBandsToSkip) * barWidth;
-            float y = power * scale * spectrographHeight;
-            // Draw the rectangles, adjust their height using the scale factor
+            int x = i * barWidth;
+            float height = power * scale * spectrographHeight;
 
-            rect(x % width, (spectrographHeight / 2f) - (y / 2f), barWidth, y, .4f);
+            float y = (spectrographHeight / 2f) - (height / 2f);
+            // rect(x, y, barWidth, height);
+            rect(x, 200, barWidth, 200);
 
             if (sum[i] > 0.01) {
                 textSize(11);
-                text(i, x - 5, spectrographHeight - 50);
-                text(power, x - 5, spectrographHeight - 10);
+                text(power, x - 5, y - 10);
             }
         }
     }
