@@ -10,8 +10,9 @@ public class SpectrographTest extends PApplet {
     }
 
     // Declare the sound source and FFT analyzer variables
-    SoundFile sample;
+    SoundFile soundFile;
     FFT fft;
+    BeatDetector beatDetector;
 
     // Define how many FFT bands to use (this needs to be a power of two)
     int bands = 4096;
@@ -50,12 +51,16 @@ public class SpectrographTest extends PApplet {
         barWidth = (int) (width/((float) bandsToDisplay));
 
         // Load and play a soundfile and loop it.
-        sample = new SoundFile(this, "Base of the Spine.wav");
-        sample.loop();
+        soundFile = new SoundFile(this, "Shut Our Eyes.wav");
+        soundFile.loop();
 
         // Create the FFT analyzer and connect the playing soundfile to it.
         fft = new FFT(this, bands);
-        fft.input(sample);
+        fft.input(soundFile);
+
+        beatDetector = new BeatDetector(this);
+        beatDetector.input(soundFile);
+        beatDetector.sensitivity(20);
     }
 
     public void draw() {
@@ -75,6 +80,7 @@ public class SpectrographTest extends PApplet {
         lowPowerSum = lowPowerSum / 7f;
 
         if (lowPowerSum > .15) {
+        //if (beatDetector.isBeat()) {
             background(.99f, 1, .6f);
         } else {
             background(0);
