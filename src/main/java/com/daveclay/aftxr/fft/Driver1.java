@@ -1,6 +1,7 @@
 package com.daveclay.aftxr.fft;
 
 import processing.core.PApplet;
+import processing.opengl.PShader;
 import processing.sound.*;
 
 public class Driver1 extends PApplet {
@@ -26,7 +27,7 @@ public class Driver1 extends PApplet {
 
     // Create a vector to store the smoothed spectrum data in
     float[] sum = new float[bands];
-    int bandsToDisplay = 200;
+    int bandsToDisplay = 600;
     int numberOfLowBandsToSkip = 8;
 
     // Variables for drawing the spectrum:
@@ -39,13 +40,20 @@ public class Driver1 extends PApplet {
     int spectrographHeight = 400;
     boolean hit = false;
 
+    int growthAmount = 0;
+    boolean growthDirection = true;
+    long lastHitTime = 0;
+
+    PShader blur;
+
     public void settings() {
-        size(1440, 860, P3D);
+        size(1440, 860, P2D);
     }
 
     public void setup() {
         background(0);
         colorMode(HSB, 1, 1, 1, 1);
+        blur = loadShader("FishEye.glsl");
 
         // Calculate the width of the rects depending on how many bands we have
         barWidth = (int) (width/((float) bandsToDisplay));
@@ -67,6 +75,7 @@ public class Driver1 extends PApplet {
         // Perform the analysis
         fft.analyze();
         hit = false;
+        growthAmount = growthDirection ? growthAmount + 1 : growthAmount - 1;
 
         for (int i = 0; i < bands; i++) {
             // Smooth the FFT spectrum data by smoothing factor
@@ -77,35 +86,48 @@ public class Driver1 extends PApplet {
             }
         }
 
-        lowPowerSum = lowPowerSum / 7f;
-
-        if (lowPowerSum > .15) {
-        //if (beatDetector.isBeat()) {
-            background(.99f, 1, .6f);
-        } else {
-            background(0);
-        }
-
+        filter(blur);
         noStroke();
         textSize(20);
         fill(1, 1, 1);
+
+        lowPowerSum = lowPowerSum / 7f;
         text(lowPowerSum, 50, 600);
+
+        background(0);
+        if (lowPowerSum > .15) {
+            long now = System.currentTimeMillis();
+            if (now - lastHitTime > 500) {
+                hit = true;
+                growthAmount = 0;
+                lastHitTime = now;
+            }
+        }
 
         for (int i = 0; i < bandsToDisplay; i++) {
             float power = sum[i + numberOfLowBandsToSkip];
-            fill(power * .45f, 1, 1, power * 10);
 
-            int x = i * barWidth;
+            float offset = hit ? 0.3f : 0;
+            fill((power * .45f) + offset, 1 - (power * 4), 1, power * 10);
+
+            int xShiftDirection = i % 2 == 0 ? -1 : 1;
+            int x = (width / 2) + (xShiftDirection * (i * barWidth / 2));
             float height = power * scale * spectrographHeight;
 
             float y = (spectrographHeight / 2f) - (height / 2f);
+            float barHeight = 20 + (growthAmount * ( power * 50));
             // rect(x, y, barWidth, height);
-            rect(x, 200, barWidth, 200);
+            rect(x, 30, barWidth, barHeight);
+            rect(x, 800 - barHeight, barWidth, barHeight);
 
             if (sum[i] > 0.01) {
                 textSize(11);
                 text(power, x - 5, y - 10);
             }
+        }
+
+        if (growthAmount > 300) {
+            growthAmount = 0;
         }
     }
 }
