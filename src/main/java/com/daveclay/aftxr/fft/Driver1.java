@@ -51,15 +51,14 @@ public class Driver1 extends PApplet {
     }
 
     public void setup() {
-        background(0);
         colorMode(HSB, 1, 1, 1, 1);
-        blur = loadShader("FishEye.glsl");
+        blur = loadShader("sepBlur.glsl");
 
         // Calculate the width of the rects depending on how many bands we have
         barWidth = (int) (width/((float) bandsToDisplay));
 
         // Load and play a soundfile and loop it.
-        soundFile = new SoundFile(this, "Shut Our Eyes.wav");
+        soundFile = new SoundFile(this, "Prometheus.wav");
         soundFile.loop();
 
         // Create the FFT analyzer and connect the playing soundfile to it.
@@ -94,7 +93,7 @@ public class Driver1 extends PApplet {
         lowPowerSum = lowPowerSum / 7f;
         text(lowPowerSum, 50, 600);
 
-        background(0);
+        // background(0);
         if (lowPowerSum > .15) {
             long now = System.currentTimeMillis();
             if (now - lastHitTime > 500) {
@@ -112,17 +111,16 @@ public class Driver1 extends PApplet {
 
             int xShiftDirection = i % 2 == 0 ? -1 : 1;
             int x = (width / 2) + (xShiftDirection * (i * barWidth / 2));
-            float height = power * scale * spectrographHeight;
-
-            float y = (spectrographHeight / 2f) - (height / 2f);
-            float barHeight = 20 + (growthAmount * ( power * 50));
+            // float height = power * scale * spectrographHeight;
+            // float y = (spectrographHeight / 2f) - (height / 2f);
+            float barHeight = min(770, 20 + (growthAmount * ( power * 100)));
             // rect(x, y, barWidth, height);
             rect(x, 30, barWidth, barHeight);
-            rect(x, 800 - barHeight, barWidth, barHeight);
+            rect((width - x), 800 - barHeight, barWidth, barHeight);
 
             if (sum[i] > 0.01) {
                 textSize(11);
-                text(power, x - 5, y - 10);
+                text(power, x - 5, power * 500 + (height / 2f));
             }
         }
 
