@@ -23,7 +23,7 @@ public class Driver1 extends PApplet {
     // A smoothing factor of 1.0 means no smoothing (only the data from the newest analysis
     // is rendered), decrease the factor down towards 0.0 to have the visualisation update
     // more slowly, which is easier on the eye.
-    float smoothingFactor = 0.99f;
+    float smoothingFactor = 0.7f;
 
     // Create a vector to store the smoothed spectrum data in
     float[] sum = new float[bands];
@@ -40,7 +40,8 @@ public class Driver1 extends PApplet {
     int spectrographHeight = 400;
     boolean hit = false;
 
-    int growthAmount = 0;
+    int heightGrowthAmount = 0;
+    int widthGrowthAmount = 0;
     boolean growthDirection = true;
     long lastHitTime = 0;
 
@@ -52,13 +53,17 @@ public class Driver1 extends PApplet {
 
     public void setup() {
         colorMode(HSB, 1, 1, 1, 1);
+        background(0);
         blur = loadShader("sepBlur.glsl");
+        blur.set("blurSize", 1);
+        blur.set("sigma", 1f);
+        blur.set("horizontalPass", 0);
 
         // Calculate the width of the rects depending on how many bands we have
         barWidth = (int) (width/((float) bandsToDisplay));
 
         // Load and play a soundfile and loop it.
-        soundFile = new SoundFile(this, "Prometheus.wav");
+        soundFile = new SoundFile(this, "Shut Our Eyes.wav");
         soundFile.loop();
 
         // Create the FFT analyzer and connect the playing soundfile to it.
@@ -73,8 +78,7 @@ public class Driver1 extends PApplet {
     public void draw() {
         // Perform the analysis
         fft.analyze();
-        hit = false;
-        growthAmount = growthDirection ? growthAmount + 1 : growthAmount - 1;
+        heightGrowthAmount = growthDirection ? heightGrowthAmount + 1 : heightGrowthAmount - 1;
 
         for (int i = 0; i < bands; i++) {
             // Smooth the FFT spectrum data by smoothing factor
@@ -84,48 +88,69 @@ public class Driver1 extends PApplet {
                 lowPowerSum += sum[i];
             }
         }
-
-        filter(blur);
-        noStroke();
-        textSize(20);
-        fill(1, 1, 1);
-
         lowPowerSum = lowPowerSum / 7f;
-        text(lowPowerSum, 50, 600);
 
-        // background(0);
-        if (lowPowerSum > .15) {
-            long now = System.currentTimeMillis();
-            if (now - lastHitTime > 500) {
+        background(0);
+        if (hit) {
+            long timeSinceHit = System.currentTimeMillis() - lastHitTime;
+            float lerp = lerp(5, 20, timeSinceHit / 200f);
+            if (timeSinceHit > 300 && lowPowerSum < .1) {
+                lastHitTime = 0;
+                hit = false;
+            }
+            //background(.0f, 1f, .1f);
+            blur.set("blurSize", (int)lerp);
+            blur.set("sigma", lerp);
+        } else {
+            if (lowPowerSum > .1) {
+                long now = System.currentTimeMillis();
                 hit = true;
-                growthAmount = 0;
+                heightGrowthAmount = 0;
+                widthGrowthAmount = 0;
                 lastHitTime = now;
             }
         }
 
+        noStroke();
+        textSize(500);
+        fill(1, 1, 1, hit ? .2f : .02f);
+
+        float hueOffset = hit ? .01f : 0;
+
         for (int i = 0; i < bandsToDisplay; i++) {
             float power = sum[i + numberOfLowBandsToSkip];
 
-            float offset = hit ? 0.3f : 0;
-            fill((power * .45f) + offset, 1 - (power * 4), 1, power * 10);
+            float hue = (power * .45f) + hueOffset;
+            float saturation = 1 - (power * 10);
+            float value = 1;
+            fill(hue, saturation, value, power * 10);
 
             int xShiftDirection = i % 2 == 0 ? -1 : 1;
-            int x = (width / 2) + (xShiftDirection * (i * barWidth / 2));
+            int x = (width / 2) + (xShiftDirection * (i * barWidth));
             // float height = power * scale * spectrographHeight;
             // float y = (spectrographHeight / 2f) - (height / 2f);
-            float barHeight = min(770, 20 + (growthAmount * ( power * 100)));
+            float barPowerHeight = 20 + (heightGrowthAmount * (power * 100));
+            float barHeight = min(770, barPowerHeight);
             // rect(x, y, barWidth, height);
-            rect(x, 30, barWidth, barHeight);
-            rect((width - x), 800 - barHeight, barWidth, barHeight);
+            rect(x, 30, barWidth + widthGrowthAmount, barHeight);
+            rect((width - x), 800 - barHeight, barWidth + widthGrowthAmount, barHeight);
 
-            if (sum[i] > 0.01) {
+            if (sum[i] > 0.01 && !hit) {
                 textSize(11);
                 text(power, x - 5, power * 500 + (height / 2f));
             }
         }
 
-        if (growthAmount > 300) {
-            growthAmount = 0;
+        if (heightGrowthAmount > 100) {
+            // widthGrowthAmount++;
+            // maybe blue?
+            heightGrowthAmount += 9;
         }
+
+        if (hit) {
+            filter(blur);
+        }
+
+        text(lowPowerSum, 50, 600);
     }
 }
