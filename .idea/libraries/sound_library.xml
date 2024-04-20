@@ -1,5 +1,5 @@
 <component name="libraryTable">
-  <library name="jorbis-0.0.17.4">
+  <library name="sound library">
     <CLASSES>
       <root url="jar://$PROJECT_DIR$/../Processing/libraries/sound/library/jorbis-0.0.17.4.jar!/" />
       <root url="jar://$PROJECT_DIR$/../Processing/libraries/sound/library/jsyn-17.1.0.jar!/" />

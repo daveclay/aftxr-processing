@@ -3,10 +3,10 @@ package com.daveclay.aftxr.fft;
 import processing.core.PApplet;
 import processing.sound.*;
 
-public class SpectrographTest extends PApplet {
+public class Driver1 extends PApplet {
 
     public static void main(String[] args) {
-        new SpectrographTest().runSketch();
+        new Driver1().runSketch();
     }
 
     // Declare the sound source and FFT analyzer variables
@@ -40,7 +40,7 @@ public class SpectrographTest extends PApplet {
     boolean hit = false;
 
     public void settings() {
-        size(1440, 860);
+        size(1440, 860, P3D);
     }
 
     public void setup() {

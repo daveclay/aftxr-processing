@@ -1,0 +1,29 @@
+<component name="libraryTable">
+  <library name="Processing mode jars">
+    <CLASSES>
+      <root url="jar:///Applications/Processing.app/Contents/Java/modes/java/mode/org.eclipse.equinox.preferences.jar!/" />
+      <root url="jar:///Applications/Processing.app/Contents/Java/modes/java/mode/org.eclipse.jdt.core.jar!/" />
+      <root url="jar:///Applications/Processing.app/Contents/Java/modes/java/mode/org.eclipse.core.resources.jar!/" />
+      <root url="jar:///Applications/Processing.app/Contents/Java/modes/java/mode/antlr.jar!/" />
+      <root url="jar:///Applications/Processing.app/Contents/Java/modes/java/mode/jsoup-1.7.1.jar!/" />
+      <root url="jar:///Applications/Processing.app/Contents/Java/modes/java/mode/JavaMode.jar!/" />
+      <root url="jar:///Applications/Processing.app/Contents/Java/modes/java/mode/org.eclipse.osgi.jar!/" />
+      <root url="jar:///Applications/Processing.app/Contents/Java/modes/java/mode/org.netbeans.swing.outline.jar!/" />
+      <root url="jar:///Applications/Processing.app/Contents/Java/modes/java/mode/org.eclipse.lsp4j.jar!/" />
+      <root url="jar:///Applications/Processing.app/Contents/Java/modes/java/mode/gson.jar!/" />
+      <root url="jar:///Applications/Processing.app/Contents/Java/modes/java/mode/org.eclipse.equinox.common.jar!/" />
+      <root url="jar:///Applications/Processing.app/Contents/Java/modes/java/mode/classpath-explorer-1.0.jar!/" />
+      <root url="jar:///Applications/Processing.app/Contents/Java/modes/java/mode/jdtCompilerAdapter.jar!/" />
+      <root url="jar:///Applications/Processing.app/Contents/Java/modes/java/mode/org.eclipse.core.runtime.jar!/" />
+      <root url="jar:///Applications/Processing.app/Contents/Java/modes/java/mode/antlr-4.7.2-complete.jar!/" />
+      <root url="jar:///Applications/Processing.app/Contents/Java/modes/java/mode/org.eclipse.jdt.compiler.apt.jar!/" />
+      <root url="jar:///Applications/Processing.app/Contents/Java/modes/java/mode/org.eclipse.text.jar!/" />
+      <root url="jar:///Applications/Processing.app/Contents/Java/modes/java/mode/org.eclipse.lsp4j.jsonrpc.jar!/" />
+      <root url="jar:///Applications/Processing.app/Contents/Java/modes/java/mode/org.eclipse.core.jobs.jar!/" />
+      <root url="jar:///Applications/Processing.app/Contents/Java/modes/java/mode/org.eclipse.core.contenttype.jar!/" />
+      <root url="jar:///Applications/Processing.app/Contents/Java/modes/java/mode/com.ibm.icu.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

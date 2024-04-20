@@ -1,0 +1,21 @@
+<component name="libraryTable">
+  <library name="macos-x86_64">
+    <CLASSES>
+      <root url="jar:///Applications/Processing.app/Contents/Java/core/library/core.jar!/" />
+      <root url="jar:///Applications/Processing.app/Contents/Java/core/library/gluegen-rt.jar!/" />
+      <root url="jar:///Applications/Processing.app/Contents/Java/core/library/jogl-all.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <NATIVE>
+      <root url="file:///Applications/Processing.app/Contents/Java/core/library/macos-x86_64" />
+      <root url="file:///Applications/Processing.app/Contents/Java/core/library/macos-x86_64" />
+      <root url="file:///Applications/Processing.app/Contents/Java/core/library/macos-x86_64" />
+      <root url="file:///Applications/Processing.app/Contents/Java/core/library/macos-x86_64" />
+      <root url="file:///Applications/Processing.app/Contents/Java/core/library/macos-x86_64" />
+      <root url="file:///Applications/Processing.app/Contents/Java/core/library/macos-x86_64" />
+      <root url="file:///Applications/Processing.app/Contents/Java/core/library/macos-aarch64" />
+      <root url="file:///Applications/Processing.app/Contents/Java/core/library/macos-x86_64" />
+    </NATIVE>
+    <SOURCES />
+  </library>
+</component>
