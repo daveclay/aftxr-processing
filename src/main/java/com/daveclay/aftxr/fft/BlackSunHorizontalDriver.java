@@ -3,10 +3,10 @@ package com.daveclay.aftxr.fft;
 import processing.core.PApplet;
 import processing.opengl.PShader;
 
-public class HorizontalDriver extends PApplet {
+public class BlackSunHorizontalDriver extends PApplet {
 
     public static void main(String[] args) {
-        new HorizontalDriver().runSketch();
+        new BlackSunHorizontalDriver().runSketch();
     }
 
     // Create a vector to store the smoothed spectrum data in
@@ -19,7 +19,6 @@ public class HorizontalDriver extends PApplet {
 
     int heightGrowthAmount = 0;
     int widthGrowthAmount = 0;
-    boolean growthDirection = true;
 
     PShader blur;
 
@@ -30,16 +29,15 @@ public class HorizontalDriver extends PApplet {
     public void setup() {
         analyzer = Analyzer.Options.forSketch(this)
                 .soundFile("Rigit Body III video.wav")
-                .smoothingFactor(.8f)
+                .smoothingFactor(.2f)
                 .buildAnalyzer();
 
         blur = loadShader("sepBlur.glsl");
-        blur.set("blurSize", 35);
-        blur.set("sigma", 9.2f);
+        blur.set("blurSize", 30);
+        blur.set("sigma", 7.2f);
         blur.set("horizontalPass", 0);
 
-        colorMode(HSB, 1, 1, 1, 1);
-        background(0);
+        background(255);
 
         // Calculate the width of the rects depending on how many bands we have
         barWidth = width / bandsToDisplay;
@@ -50,10 +48,7 @@ public class HorizontalDriver extends PApplet {
     public void draw() {
         analyzer.update();
         boolean hit = analyzer.lowPassHold;
-        background(0);
-        fill(1, 1, 1);
-        text(barWidth, 10, 10);
-        noFill();
+        background(255);
 
         if (hit) {
             if (analyzer.lowPassTriggered) {
@@ -62,17 +57,12 @@ public class HorizontalDriver extends PApplet {
             }
         }
 
-        float hueOffset = hit ? .01f : 0;
-
+        noFill();
         for (int i = 0; i < bandsToDisplay; i++) {
-            float power = analyzer.summedBandValues[i + analyzer.numberOfLowBandsToSkip] * 4f;
+            float power = analyzer.summedBandValues[i + analyzer.numberOfLowBandsToSkip];
 
-            float hue = (power * .45f) + hueOffset;
-            float saturation = 1 - (power * 2);
-            float value = 1;
-            float alpha = power * 10;
-            noFill();
-            stroke(hue, saturation, value, alpha);
+            float alpha = power * 5000f;
+            stroke(0, 0, 0, alpha);
             strokeWeight(1);
             int x = 0;
             int lineHeight = 1;
