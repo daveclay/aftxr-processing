@@ -14,6 +14,7 @@ public class Analyzer {
         int numberOfLowBandsToSkip = 8;
         int millisecondsToHoldHit = 200;
         float lowPowerThreshold = .1f;
+        int lowPassCutoff;
 
         private Options(PApplet sketch) {
             this.parent = sketch;
@@ -53,6 +54,11 @@ public class Analyzer {
             return this;
         }
 
+        public Options lowPassCutoff(int lowPassCutoff) {
+            this.lowPassCutoff = lowPassCutoff;
+            return this;
+        }
+
         public Options millisecondsToHoldHit(int millisecondsToHoldHit) {
             this.millisecondsToHoldHit = millisecondsToHoldHit;
             return this;
@@ -75,6 +81,7 @@ public class Analyzer {
     private final float smoothingFactor;
     private final float millisecondsToHoldHit;
     private final float lowPowerThreshold;
+    private final int lowPassCutoff;
 
     // calculated
     private long lastHitTime = 0;
@@ -108,6 +115,7 @@ public class Analyzer {
         this.numberOfLowBandsToSkip = analyzerOptions.numberOfLowBandsToSkip;
         this.millisecondsToHoldHit = analyzerOptions.millisecondsToHoldHit;
         this.lowPowerThreshold = analyzerOptions.lowPowerThreshold;
+        this.lowPassCutoff = analyzerOptions.lowPassCutoff;
     }
 
     public void update() {
@@ -141,10 +149,14 @@ public class Analyzer {
             summedBandValues[i] += (fft.spectrum[i] - summedBandValues[i]) * smoothingFactor;
 
             // TODO: low pass threshold
-            if (i > numberOfLowBandsToSkip + 3 && i < numberOfLowBandsToSkip + 10) {
+            if (withinLowPassRange(i)) {
                 lowPowerSum += summedBandValues[i];
             }
         }
         lowPowerSum = lowPowerSum / 7f;
+    }
+
+    private boolean withinLowPassRange(int i) {
+        return i > numberOfLowBandsToSkip && i < numberOfLowBandsToSkip + lowPassCutoff;
     }
 }
