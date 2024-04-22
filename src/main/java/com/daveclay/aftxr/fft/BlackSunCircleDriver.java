@@ -29,7 +29,7 @@ public class BlackSunCircleDriver extends PApplet {
     public void setup() {
         analyzer = Analyzer.Options.forSketch(this)
                 .soundFile("Rigit Body III video.wav")
-                .smoothingFactor(.2f)
+                .smoothingFactor(.1f)
                 .lowPowerThreshold(.1f)
                 .millisecondsToHoldHit(700)
                 .numberOfLowBandsToSkip(7)
@@ -37,12 +37,12 @@ public class BlackSunCircleDriver extends PApplet {
                 .buildAnalyzer();
 
         verticalBlur = loadShader("sepBlur.glsl");
-        verticalBlur.set("blurSize", 20);
+        verticalBlur.set("blurSize", 10);
         verticalBlur.set("sigma", 13.2f);
         verticalBlur.set("horizontalPass", 0);
 
         horizontalBlur = loadShader("sepBlur.glsl");
-        horizontalBlur.set("blurSize", 20);
+        horizontalBlur.set("blurSize", 10);
         horizontalBlur.set("sigma", 13.2f);
         horizontalBlur.set("horizontalPass", 1);
 
@@ -69,8 +69,8 @@ public class BlackSunCircleDriver extends PApplet {
             growthAmount = 1;
         }
 
-        fill(0, 0, 0, 255);
-        circle(width / 2f, height / 2f, max(growthAmount, 30));
+        fill(0, 0, 0, 240);
+        circle(width / 2f, height / 2f, max(growthAmount, 100));
         noFill();
 
         noFill();
@@ -80,10 +80,10 @@ public class BlackSunCircleDriver extends PApplet {
             float alpha = power * 10000f;
             stroke(0, 0, 0, alpha);
             strokeWeight(1);
-            float x = (width / 2f) + (power * (hit ? 20 : 10));
-            int y = height / 2;
-            int hi = i * 2;
-            circle(x, y, hi);
+            float x = (width / 2f) + (power * (hit ? 200 : 80));
+            float y = (height / 2f) + (hit ? (10 - (power * 300)) : (power * 100));
+            int extent = (i * 2) + 100;
+            circle(x, y, extent);
         }
 
         filter(verticalBlur);
