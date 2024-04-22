@@ -3,10 +3,10 @@ package com.daveclay.aftxr.fft;
 import processing.core.PApplet;
 import processing.opengl.PShader;
 
-public class Driver1 extends PApplet {
+public class VerticalDriver extends PApplet {
 
     public static void main(String[] args) {
-        new Driver1().runSketch();
+        new VerticalDriver().runSketch();
     }
 
     // Create a vector to store the smoothed spectrum data in
