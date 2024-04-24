@@ -35,7 +35,7 @@ public class HorizontalDriver extends PApplet {
     public void setup() {
         analyzer = Analyzer.Options.forSketch(this)
                 .soundFile("Rigit Body III video.wav")
-                .smoothingFactor(.8f)
+                .smoothingFactor(.2f)
                 .lowPowerThreshold(.1f)
                 .millisecondsToHoldHit(700)
                 .numberOfLowBandsToSkip(2)
@@ -71,7 +71,7 @@ public class HorizontalDriver extends PApplet {
         for (int i = 0; i < bandsToDisplay; i++) {
             float power = analyzer.summedBandValues[i + analyzer.numberOfLowBandsToSkip];
 
-            int hue = (int) interpolate(power, 0, .05f, 1, 25);
+            int hue = (int) interpolate(power, 0, .05f, 1, 10);
             int fullRange = (int) interpolate(power, 0, .05f, 1, 255);
             int saturation = 255;
             int value = 255;
@@ -83,7 +83,7 @@ public class HorizontalDriver extends PApplet {
             background.rect(x, y, width, 1);
         }
 
-        blur.set("blurSize", (int) lerp(3, 10, analyzer.lowPowerSum * 1000));
+        blur.set("blurSize", (int) interpolate(analyzer.lowPowerSum, .006f, .01f, 1, 60));
         blur.set("sigma", lerp(2f, 10f, analyzer.lowPowerSum * 1000));
         blur.set("horizontalPass", 0);
         background.filter(blur);
