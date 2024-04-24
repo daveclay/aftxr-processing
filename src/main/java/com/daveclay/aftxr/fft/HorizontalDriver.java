@@ -1,7 +1,10 @@
 package com.daveclay.aftxr.fft;
 
 import processing.core.PApplet;
+import processing.core.PGraphics;
 import processing.opengl.PShader;
+
+import static com.daveclay.aftxr.fft.Utils.interpolate;
 
 public class HorizontalDriver extends PApplet {
 
@@ -21,6 +24,8 @@ public class HorizontalDriver extends PApplet {
     int widthGrowthAmount = 0;
     boolean growthDirection = true;
 
+    PGraphics background;
+
     PShader blur;
 
     public void settings() {
@@ -31,15 +36,15 @@ public class HorizontalDriver extends PApplet {
         analyzer = Analyzer.Options.forSketch(this)
                 .soundFile("Rigit Body III video.wav")
                 .smoothingFactor(.8f)
+                .lowPowerThreshold(.1f)
+                .millisecondsToHoldHit(700)
+                .numberOfLowBandsToSkip(2)
+                .lowPassCutoff(2)
                 .buildAnalyzer();
 
         blur = loadShader("sepBlur.glsl");
-        blur.set("blurSize", 35);
-        blur.set("sigma", 9.2f);
-        blur.set("horizontalPass", 0);
 
-        colorMode(HSB, 1, 1, 1, 1);
-        background(0);
+        background = createGraphics(width, height, P3D);
 
         // Calculate the width of the rects depending on how many bands we have
         barWidth = width / bandsToDisplay;
@@ -50,10 +55,6 @@ public class HorizontalDriver extends PApplet {
     public void draw() {
         analyzer.update();
         boolean hit = analyzer.lowPassHold;
-        background(0);
-        fill(1, 1, 1);
-        text(barWidth, 10, 10);
-        noFill();
 
         if (hit) {
             if (analyzer.lowPassTriggered) {
@@ -62,24 +63,32 @@ public class HorizontalDriver extends PApplet {
             }
         }
 
-        float hueOffset = hit ? .01f : 0;
+        float hueOffset = hit ? 30 : 0;
 
+        background.beginDraw();
+        background.colorMode(HSB, 255, 255, 255, 255);
+        background.background(0, 0, 0);
         for (int i = 0; i < bandsToDisplay; i++) {
-            float power = analyzer.summedBandValues[i + analyzer.numberOfLowBandsToSkip] * 4f;
+            float power = analyzer.summedBandValues[i + analyzer.numberOfLowBandsToSkip];
 
-            float hue = (power * .45f) + hueOffset;
-            float saturation = 1 - (power * 2);
-            float value = 1;
-            float alpha = power * 10;
-            noFill();
-            stroke(hue, saturation, value, alpha);
-            strokeWeight(1);
+            int hue = (int) interpolate(power, 0, .05f, 1, 25);
+            int fullRange = (int) interpolate(power, 0, .05f, 1, 255);
+            int saturation = 255;
+            int value = 255;
+            int alpha = fullRange;
+            background.noFill();
+            background.stroke(hue, saturation, value, alpha);
             int x = 0;
-            int lineHeight = 1;
             int y = (height / 2) + (i * (i % 2 == 0 ? -1 : 1));
-            rect(x, y, width, lineHeight);
+            background.rect(x, y, width, 1);
         }
 
-        filter(blur);
+        blur.set("blurSize", (int) lerp(3, 10, analyzer.lowPowerSum * 1000));
+        blur.set("sigma", lerp(2f, 10f, analyzer.lowPowerSum * 1000));
+        blur.set("horizontalPass", 0);
+        background.filter(blur);
+
+        background.endDraw();;
+        image(background, 0, 0);
     }
 }

@@ -148,12 +148,11 @@ public class Analyzer {
             // Smooth the FFT spectrum data by smoothing factor
             summedBandValues[i] += (fft.spectrum[i] - summedBandValues[i]) * smoothingFactor;
 
-            // TODO: low pass threshold
             if (withinLowPassRange(i)) {
                 lowPowerSum += summedBandValues[i];
             }
         }
-        lowPowerSum = lowPowerSum / 7f;
+        lowPowerSum = lowPowerSum / (float) numberOfLowBandsToSkip;
     }
 
     private boolean withinLowPassRange(int i) {
