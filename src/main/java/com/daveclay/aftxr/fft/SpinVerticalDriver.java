@@ -30,8 +30,12 @@ public class SpinVerticalDriver extends PApplet {
     PFont mono11;
     PFont mono24;
 
+    boolean logCoords = false;
+    int shotIndex = 0;
+
     public void settings() {
-        size(1440, 860, P3D);
+        // 1280 × 720
+        size(1280, 720, P3D);
     }
 
     public void setup() {
@@ -62,6 +66,109 @@ public class SpinVerticalDriver extends PApplet {
         blur.set("horizontalPass", 0);
         barWidth = 3;
     }
+
+    interface CameraShot {
+        void go(PeasyCam peasyCam);
+    }
+
+    CameraShot[] shots = {
+            new CameraShot() {
+                @Override
+                public void go(PeasyCam peasyCam) {
+                    cam.lookAt(-3.20, 103.84, -67.69);
+                    cam.setRotations(-1.07, -0.88, 0.31);
+                    cam.setDistance(400.0);
+                }
+            },
+            new CameraShot() {
+                @Override
+                public void go(PeasyCam peasyCam) {
+                    cam.lookAt(154.03, -19.03,-153.57);
+                    cam.setRotations(-0.23, -0.95,1.34);
+                    cam.setDistance(400.0);
+                }
+            },
+            new CameraShot() {
+                @Override
+                public void go(PeasyCam peasyCam) {
+                    cam.lookAt(-109.69, 170.15,84.07);
+                    cam.setRotations(-1.82, 0.77,0.07);
+                    cam.setDistance(400.0);
+                }
+            },
+            new CameraShot() {
+                @Override
+                public void go(PeasyCam peasyCam) {
+                    cam.lookAt(-110.49, 178.48,47.49);
+                    cam.setRotations(-1.33, -0.78,0.07);
+                    cam.setDistance(400.0);
+                }
+            },
+            new CameraShot() {
+                @Override
+                public void go(PeasyCam peasyCam) {
+                    cam.lookAt(220.98, -0.39,-90.25);
+                    cam.setRotations(1.30, 0.38,-1.23);
+                    cam.setDistance(400.0);
+                }
+            },
+            new CameraShot() {
+                @Override
+                public void go(PeasyCam peasyCam) {
+                    cam.lookAt(220.98, -0.39,-90.25);
+                    cam.setRotations(0.53, 1.15,-0.75);
+                    cam.setDistance(400.0);
+                }
+            },
+            new CameraShot() {
+                @Override
+                public void go(PeasyCam peasyCam) {
+                    cam.lookAt(-175.20, -45.56,22.06);
+                    cam.setRotations(-0.99, -0.93,0.64);
+                    cam.setDistance(400.0);
+                }
+            },
+            new CameraShot() {
+                @Override
+                public void go(PeasyCam peasyCam) {
+                    cam.lookAt(-157.17, 92.40,-47.61);
+                    cam.setRotations(-1.54, -1.04,-0.36);
+                    cam.setDistance(400.0);
+                }
+            },
+            new CameraShot() {
+                @Override
+                public void go(PeasyCam peasyCam) {
+                    cam.lookAt(117.60, -55.05,57.42);
+                    cam.setRotations(1.43, 0.96,2.93);
+                    cam.setDistance(1458.0260133938123);
+                }
+            },
+            new CameraShot() {
+                @Override
+                public void go(PeasyCam peasyCam) {
+                    cam.lookAt(-8.18, 135.31,55.35);
+                    cam.setRotations(1.58, -0.99,-2.51);
+                    cam.setDistance(1206.2815985154587);
+                }
+            },
+            new CameraShot() {
+                @Override
+                public void go(PeasyCam peasyCam) {
+                    cam.lookAt(-581.65, -33.54, -266.78);
+                    cam.setRotations(-0.09, -0.51, -0.03);
+                    cam.setDistance(400.0);
+                }
+            },
+            new CameraShot() {
+                @Override
+                public void go(PeasyCam peasyCam) {
+                    cam.lookAt(33.54, 388.19,-163.56);
+                    cam.setRotations(-0.34, 0.74,3.05);
+                    cam.setDistance(400.0);
+                }
+            }
+    };
 
     public void draw() {
         analyzer.update();
@@ -128,8 +235,16 @@ public class SpinVerticalDriver extends PApplet {
         rotation += .2f;
 
         cam.beginHUD();
-        fill(1, 0, 1, 1);
-        /*
+        int yPos = 18;
+        textFont(mono11);
+        textSize(11);
+        fill(1, 0, 0, .3f);
+        rect(6, 6, 80, 180);
+
+        rect(98, 6, 30, 40);
+
+        fill(1, 0, 1, .5f);
+
         float[] lookAt = cam.getLookAt();
         String[] lookAtStrs = nfc(lookAt, 2);
         text("lookAt: ", 10, yPos);
@@ -146,12 +261,25 @@ public class SpinVerticalDriver extends PApplet {
 
         text("distance: ", 10, 9 * yPos);
         text(nfc((float)cam.getDistance(), 2), 10, 10 * yPos);
-         */
 
-        fill(1, 0, 1, .5f);
+        if (logCoords) {
+            lookAt = cam.getLookAt();
+            lookAtStrs = nfc(lookAt, 2);
+
+            System.out.println("cam.lookAt(" + lookAtStrs[0] + ", " + lookAtStrs[1] + ","  + lookAtStrs[2] + ");");
+
+            rotations = cam.getRotations();
+            rotationStrings = nfc(rotations, 2);
+            System.out.println("cam.setRotations(" + rotationStrings[0] + ", " + rotationStrings[1] + ","  + rotationStrings[2] + ");");
+
+            System.out.println("cam.setDistance(" + cam.getDistance() + ");");
+
+            shots[shotIndex].go(cam);
+            logCoords = false;
+        }
+
         textFont(mono11);
         textSize(11);
-        int yPos = 18;
 
         float num = analyzer.lowPowerSum * 100;
         text(String.valueOf(num).substring(0, 4), 100, yPos);
@@ -163,5 +291,17 @@ public class SpinVerticalDriver extends PApplet {
 
         cam.endHUD();
         // camera(xpos, ypos, zpos, 0, 0, 0, -1, -1, 0);
+    }
+
+    @Override
+    public void keyPressed() {
+        if (keyCode == 65) {
+            // 'a' Key
+            logCoords = true;
+            shotIndex++;
+            if (shotIndex == shots.length) {
+                shotIndex = 0;
+            }
+        }
     }
 }
