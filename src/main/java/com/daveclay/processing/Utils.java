@@ -1,4 +1,4 @@
-package com.daveclay.aftxr.fft;
+package com.daveclay.processing;
 
 public class Utils {
     public static float interpolate(float value, float start1, float stop1, float start2, float stop2) {

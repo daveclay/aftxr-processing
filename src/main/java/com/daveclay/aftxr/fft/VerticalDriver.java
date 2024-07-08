@@ -29,7 +29,7 @@ public class VerticalDriver extends PApplet {
 
     public void setup() {
         analyzer = Analyzer.Options.forSketch(this)
-                .soundFile("Prometheus.wav")
+                .soundFile("Lense 5.wav")
                 .buildAnalyzer();
 
         colorMode(HSB, 1, 1, 1, 1);

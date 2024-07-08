@@ -28,10 +28,10 @@ public class BlackSunCircleDriver extends PApplet {
 
     public void setup() {
         analyzer = Analyzer.Options.forSketch(this)
-                .soundFile("Rigit Body III video.wav")
+                .soundFile("Lense 5.wav")
                 .smoothingFactor(.1f)
                 .lowPowerThreshold(.1f)
-                .millisecondsToHoldHit(700)
+                .millisecondsToHoldHit(100)
                 .numberOfLowBandsToSkip(7)
                 .lowPassCutoff(8)
                 .buildAnalyzer();
@@ -63,7 +63,7 @@ public class BlackSunCircleDriver extends PApplet {
             if (analyzer.lowPassTriggered) {
                 growthAmount = 500;
             } else {
-                growthAmount -= 30;
+                growthAmount -= 50;
             }
         } else {
             growthAmount = 1;

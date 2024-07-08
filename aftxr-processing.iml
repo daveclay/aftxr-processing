@@ -13,5 +13,7 @@
     <orderEntry type="library" name="jna-platform1" level="project" />
     <orderEntry type="library" name="org.eclipse.equinox.preferences" level="project" />
     <orderEntry type="library" name="macos-x86_64" level="project" />
+    <orderEntry type="library" name="KotlinJavaRuntime" level="project" />
+    <orderEntry type="library" name="peasy" level="project" />
   </component>
 </module>

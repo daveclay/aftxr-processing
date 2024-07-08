@@ -28,7 +28,7 @@ public class BlackSunHorizontalDriver extends PApplet {
 
     public void setup() {
         analyzer = Analyzer.Options.forSketch(this)
-                .soundFile("Rigit Body III video.wav")
+                .soundFile("Pancreas.wav")
                 .smoothingFactor(.2f)
                 .buildAnalyzer();
 

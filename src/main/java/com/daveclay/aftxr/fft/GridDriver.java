@@ -6,10 +6,10 @@ import processing.opengl.PShader;
 
 import static com.daveclay.processing.Utils.interpolate;
 
-public class HorizontalDriver extends PApplet {
+public class GridDriver extends PApplet {
 
     public static void main(String[] args) {
-        new HorizontalDriver().runSketch();
+        new GridDriver().runSketch();
     }
 
     // Create a vector to store the smoothed spectrum data in
@@ -71,16 +71,22 @@ public class HorizontalDriver extends PApplet {
         for (int i = 0; i < bandsToDisplay; i++) {
             float power = analyzer.summedBandValues[i + analyzer.numberOfLowBandsToSkip];
 
-            int hue = (int) interpolate(power, 0, .05f, 1, 10);
+            int hue = (int) interpolate(power, 0, .07f, 0, 25);
             int fullRange = (int) interpolate(power, 0, .05f, 1, 255);
             int saturation = 255;
             int value = 255;
             int alpha = fullRange;
-            background.noFill();
-            background.stroke(hue, saturation, value, alpha);
-            int x = 0;
-            int y = (height / 2) + (i * (i % 2 == 0 ? -1 : 1));
-            background.rect(x, y, width, 1);
+            background.fill(hue, saturation, value, alpha);
+
+            int size = 20;
+            int cols = width / size;
+            int col = i % cols;
+            int rows = height / size;
+            int row = ((int) Math.floor((float) i / (float) rows) % rows);
+            int y = row * size;
+            int x = col * size;
+
+            background.rect(x, y, size, size);
         }
 
         blur.set("blurSize", (int) interpolate(analyzer.lowPowerSum, .006f, .01f, 1, 60));
