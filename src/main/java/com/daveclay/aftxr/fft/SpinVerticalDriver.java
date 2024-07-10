@@ -186,6 +186,14 @@ public class SpinVerticalDriver extends PApplet {
             new CameraShot() {
                 @Override
                 public void go(PeasyCam peasyCam) {
+                    cam.lookAt(33.54, 388.19,-163.56);
+                    cam.setRotations(0.78, 0.29,2.43);
+                    cam.setDistance(370.1732075981334);
+                }
+            },
+            new CameraShot() {
+                @Override
+                public void go(PeasyCam peasyCam) {
                     cam.lookAt(117.60, -55.05,57.42);
                     cam.setRotations(1.43, 0.96,2.93);
                     cam.setDistance(1458.0260133938123);
@@ -249,7 +257,7 @@ public class SpinVerticalDriver extends PApplet {
 
         for (int i = 0; i < bandsToDisplay; i++) {
             // 1 - 4000, apply power between?
-            float scale = lerp(.8f, 15f, ((float)i / (float)bandsToDisplay));
+            float scale = lerp(1f, 15f, ((float)i / (float)bandsToDisplay));
             float power = analyzer.summedBandValues[i + analyzer.numberOfLowBandsToSkip] * scale;
             if (hit) {
                 power *= 1.5f;
@@ -268,7 +276,8 @@ public class SpinVerticalDriver extends PApplet {
             pushMatrix();
             float depth = lerp(1, 1000, power);
             translate(x / 2f, 0, (0 + depth / 2));
-            box(barWidth, 1000, depth);
+            float width = lerp(1000, 2000, power * 10);
+            box(barWidth, width, depth);
             popMatrix();
         }
 
