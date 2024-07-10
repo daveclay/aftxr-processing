@@ -171,6 +171,14 @@ public class SpinVerticalDriver extends PApplet {
             new CameraShot() {
                 @Override
                 public void go(PeasyCam peasyCam) {
+                    cam.lookAt(186.50, -100.01,46.82);
+                    cam.setRotations(0.16, -1.39,-2.07);
+                    cam.setDistance(956.4208356316658);
+                }
+            },
+            new CameraShot() {
+                @Override
+                public void go(PeasyCam peasyCam) {
                     cam.lookAt(33.54, 388.19,-163.56);
                     cam.setRotations(-0.34, 0.74,3.05);
                     cam.setDistance(400.0);
@@ -251,16 +259,19 @@ public class SpinVerticalDriver extends PApplet {
         int xPos = 20;
         textFont(mono11);
         textSize(11);
-        fill(1, 0, 0, .3f);
-        rect(xPos - 5, yPos , 280, yPos * 5);
 
-        fill(1, 0, 1, .5f);
+        int barHeight = 50;
+        fill(1, 0, 0, hit ? .1f : .3f);
+        rect(0, 0, width, barHeight);
+        rect(0, height - barHeight, width, barHeight);
+
+        fill(1, 0, 1, .3f);
         float[] lookAt = cam.getLookAt();
         String[] lookAtStrs = nfc(lookAt, 2);
-        text("  center: " + join(lookAtStrs, ", "), xPos, 2 * yPos);
+        text(" centxr: " + join(lookAtStrs, ", "), xPos, yPos);
         float[] rotations = cam.getRotations();
         String[] rotationStrings = nfc(rotations, 2);
-        text("rotation: " + join(rotationStrings, ", "), xPos, 3 * yPos);
+        text("_rotate: " + join(rotationStrings, ", "), xPos, 2 * yPos);
         // text("distance: " + nfc((float)cam.getDistance(), 2), 10, 7 * yPos);
 
         float powerScaled = analyzer.lowPowerSum * 100;
@@ -268,9 +279,14 @@ public class SpinVerticalDriver extends PApplet {
         if (s.length() < 4) {
             s = "000" + s;
         }
-        text("   power: " + s.substring(0, 4), xPos, 4 * yPos);
+        xPos = 260;
+        text("   power: " + s.substring(0, 4), xPos, yPos);
         char i = parseChar(((int)random(0, 64) + 20));
-        text("  status: " + (hit ? "E" + ( random(0, 1) > .5f ? "X" : "R") + "R" + i + "R" : "-----"), xPos, 5 * yPos);
+        text("  status: " + (hit ? "E" + ( random(0, 1) > .5f ? "X" : "R") + "R" + i + "R" : "-----"), xPos, 2 * yPos);
+
+        xPos = 400;
+        text("pr.ject: AFTXR", xPos, yPos);
+        text("  _rate:" + nfc(frameRate, 4), xPos, 2 * yPos);
 
         if (logCoords) {
             lookAt = cam.getLookAt();
