@@ -36,6 +36,8 @@ public class SpinVerticalDriver extends PApplet {
     boolean logCoords = false;
     int shotIndex = 0;
 
+    int totalFrames = 10000;
+
     public void settings() {
         // 1280 × 720
         size(1280, 720, P3D);
@@ -134,6 +136,14 @@ public class SpinVerticalDriver extends PApplet {
                     cam.lookAt(-175.20, -45.56,22.06);
                     cam.setRotations(-0.99, -0.93,0.64);
                     cam.setDistance(400.0);
+                }
+            },
+            new CameraShot() {
+                @Override
+                public void go(PeasyCam peasyCam) {
+                    cam.lookAt(30.96, -218.39,-68.75);
+                    cam.setRotations(-1.35, 0.69,-3.08);
+                    cam.setDistance(1334.44983916654);
                 }
             },
             new CameraShot() {
@@ -285,8 +295,13 @@ public class SpinVerticalDriver extends PApplet {
         text("  status: " + (hit ? "E" + ( random(0, 1) > .5f ? "X" : "R") + "R" + i + "R" : "-----"), xPos, 2 * yPos);
 
         xPos = 400;
+        float percent = ((float)frameCount / (float)totalFrames) * 100f;
+        text("delete: " + (nfc(percent, 2)) + "%", xPos, yPos);
+        text(" _rate:" + nfc(frameRate, 4), xPos, 2 * yPos);
+
+        xPos = 540;
         text("pr.ject: AFTXR", xPos, yPos);
-        text("  _rate:" + nfc(frameRate, 4), xPos, 2 * yPos);
+        text("  count: " + frameCount, xPos, 2 * yPos);
 
         if (logCoords) {
             lookAt = cam.getLookAt();
