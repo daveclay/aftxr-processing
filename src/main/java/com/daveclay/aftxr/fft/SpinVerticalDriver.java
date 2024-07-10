@@ -29,14 +29,16 @@ public class SpinVerticalDriver extends PApplet {
     float rotationZ = 0f;
 
     PShader blur;
-    PFont mono11;
-    PFont monoBig;
+    PFont monoSmall;
+    PFont monoMid;
+    PFont impactBig;
+    int mediumFontSize = 42;
     int bigFontSize = 500;
 
     boolean logCoords = false;
     int shotIndex = 0;
 
-    int totalFrames = 10000;
+    int totalFrames = 22500;
 
     public void settings() {
         // 1280 × 720
@@ -44,10 +46,11 @@ public class SpinVerticalDriver extends PApplet {
     }
 
     public void setup() {
-        mono11 = loadFont("PTMono-Regular-11.vlw");
-        monoBig = createFont("Impact", bigFontSize, true);
+        monoSmall = createFont("Menlo-Regular", 11, true);
+        monoMid = createFont("Menlo-Regular", mediumFontSize, true);
+        impactBig = createFont("Impact", bigFontSize, true);
         background(0);
-        textFont(mono11);
+        textFont(monoSmall);
 //
 //        String[] fontNames = PFont.list();
 //        for (int i = 0; i < fontNames.length; i++) {
@@ -67,6 +70,8 @@ public class SpinVerticalDriver extends PApplet {
         cam.lookAt(-197.94, -119.22, -94.51);
         cam.setRotations(-1.33f, -0.75, -.13f);
         cam.setDistance(400);
+        cam.setMinimumDistance(200);
+        cam.setMaximumDistance(2000);
 
         colorMode(HSB, 1, 1, 1, 1);
         background(0);
@@ -125,6 +130,14 @@ public class SpinVerticalDriver extends PApplet {
             new CameraShot() {
                 @Override
                 public void go(PeasyCam peasyCam) {
+                    cam.lookAt(219.19, 304.35,-144.56);
+                    cam.setRotations(0.18, 1.02,1.45);
+                    cam.setDistance(400.0);
+                }
+            },
+            new CameraShot() {
+                @Override
+                public void go(PeasyCam peasyCam) {
                     cam.lookAt(220.98, -0.39,-90.25);
                     cam.setRotations(0.53, 1.15,-0.75);
                     cam.setDistance(400.0);
@@ -144,6 +157,22 @@ public class SpinVerticalDriver extends PApplet {
                     cam.lookAt(30.96, -218.39,-68.75);
                     cam.setRotations(-1.35, 0.69,-3.08);
                     cam.setDistance(1334.44983916654);
+                }
+            },
+            new CameraShot() {
+                @Override
+                public void go(PeasyCam peasyCam) {
+                    cam.lookAt(11.88, -18.25,164.07);
+                    cam.setRotations(2.21, 1.18,-0.68);
+                    cam.setDistance(956.4208356316658);
+                }
+            },
+            new CameraShot() {
+                @Override
+                public void go(PeasyCam peasyCam) {
+                    cam.lookAt(274.63, 505.22,4.66);
+                    cam.setRotations(1.26, 0.37,-3.05);
+                    cam.setDistance(797.5528764328917);
                 }
             },
             new CameraShot() {
@@ -241,11 +270,6 @@ public class SpinVerticalDriver extends PApplet {
             translate(x / 2f, 0, (0 + depth / 2));
             box(barWidth, 1000, depth);
             popMatrix();
-
-            if (analyzer.summedBandValues[i + analyzer.numberOfLowBandsToSkip] > 0.01 && !hit) {
-                textSize(11);;
-                text(power, x, 500 + (this.height / 2f), 10);
-            }
         }
 
         if (heightGrowthAmount > 100) {
@@ -267,15 +291,21 @@ public class SpinVerticalDriver extends PApplet {
         cam.beginHUD();
         int yPos = 18;
         int xPos = 20;
-        textFont(mono11);
-        textSize(11);
 
         int barHeight = 50;
         fill(1, 0, 0, hit ? .1f : .3f);
         rect(0, 0, width, barHeight);
         rect(0, height - barHeight, width, barHeight);
 
+        // texts
+        fill(.05f, .2f, 1, .15f);
+
+        textFont(monoMid);
+        text("AFTXR", xPos, 2 * yPos + 2);
+        textFont(monoSmall);
+
         fill(1, 0, 1, .3f);
+        xPos = 160;
         float[] lookAt = cam.getLookAt();
         String[] lookAtStrs = nfc(lookAt, 2);
         text(" centxr: " + join(lookAtStrs, ", "), xPos, yPos);
@@ -289,19 +319,19 @@ public class SpinVerticalDriver extends PApplet {
         if (s.length() < 4) {
             s = "000" + s;
         }
-        xPos = 260;
+        xPos = 400;
         text("   power: " + s.substring(0, 4), xPos, yPos);
         char i = parseChar(((int)random(0, 64) + 20));
-        text("  status: " + (hit ? "E" + ( random(0, 1) > .5f ? "X" : "R") + "R" + i + "R" : "-----"), xPos, 2 * yPos);
-
-        xPos = 400;
-        float percent = ((float)frameCount / (float)totalFrames) * 100f;
-        text("delete: " + (nfc(percent, 2)) + "%", xPos, yPos);
-        text(" _rate:" + nfc(frameRate, 4), xPos, 2 * yPos);
+        text("  status: " + (hit ? "E" + ( random(0, 1) > .5f ? "X" : "R") + "R" + i + "R" : "nominal"), xPos, 2 * yPos);
 
         xPos = 540;
+        float percent = ((float)frameCount / (float)totalFrames) * 100f;
+        text("delete: " + (nfc(percent, 2)) + "%", xPos, yPos);
+        text(" _rate: " + nfc(frameRate, 4), xPos, 2 * yPos);
+
+        xPos = 680;
         text("pr.ject: AFTXR", xPos, yPos);
-        text("  count: " + frameCount, xPos, 2 * yPos);
+        text("  dist: " + nfc((float)cam.getDistance(), 0), xPos, 2 * yPos);
 
         if (logCoords) {
             lookAt = cam.getLookAt();
@@ -320,14 +350,13 @@ public class SpinVerticalDriver extends PApplet {
         }
 
         if (hit) {
-            textFont(monoBig);
+            textFont(impactBig);
             textSize(bigFontSize);
             fill(1, .01f, 0, .05f);
             text("AFTXR", 20, bigFontSize);
         }
 
         cam.endHUD();
-        // camera(xpos, ypos, zpos, 0, 0, 0, -1, -1, 0);
     }
 
     @Override
