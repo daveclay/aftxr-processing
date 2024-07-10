@@ -276,7 +276,7 @@ public class SpinVerticalDriver extends PApplet {
             pushMatrix();
             float depth = lerp(1, 1000, power);
             translate(x / 2f, 0, (0 + depth / 2));
-            float width = lerp(1000, 2000, power * 10);
+            float width = lerp(1000, 3000, power * 10);
             box(barWidth, width, depth);
             popMatrix();
         }
