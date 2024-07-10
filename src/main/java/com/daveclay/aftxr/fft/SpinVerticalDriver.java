@@ -249,10 +249,10 @@ public class SpinVerticalDriver extends PApplet {
 
         for (int i = 0; i < bandsToDisplay; i++) {
             // 1 - 4000, apply power between?
-            float scale = norm(i + 1, 0, bandsToDisplay) * 10;
+            float scale = lerp(.8f, 15f, ((float)i / (float)bandsToDisplay));
             float power = analyzer.summedBandValues[i + analyzer.numberOfLowBandsToSkip] * scale;
             if (hit) {
-                power *= 2;
+                power *= 1.5f;
             }
 
             float hue = (power * .3f) + hueOffset;
@@ -262,8 +262,8 @@ public class SpinVerticalDriver extends PApplet {
             int xShiftDirection = i % 2 == 0 ? -1 : 1;
             int x = (xShiftDirection * (i * barWidth));
 
-            stroke(hue, saturation, value, lerp(0, .8f, power));
-            fill(hue, saturation - .2f, value, lerp(.0f, .8f, power));
+            stroke(hue, saturation, value, lerp(0, .8f, power * .8f));
+            fill(hue, saturation - .2f, value, lerp(.0f, .8f, power * .8f));
 
             pushMatrix();
             float depth = lerp(1, 1000, power);
