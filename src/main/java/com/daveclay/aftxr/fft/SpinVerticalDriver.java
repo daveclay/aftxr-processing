@@ -24,11 +24,14 @@ public class SpinVerticalDriver extends PApplet {
     int heightGrowthAmount = 0;
     int widthGrowthAmount = 0;
     boolean growthDirection = true;
-    float rotation = 0f;
+    float rotationX = 0f;
+    float rotationY = 0f;
+    float rotationZ = 0f;
 
     PShader blur;
     PFont mono11;
-    PFont mono24;
+    PFont monoBig;
+    int bigFontSize = 500;
 
     boolean logCoords = false;
     int shotIndex = 0;
@@ -40,9 +43,14 @@ public class SpinVerticalDriver extends PApplet {
 
     public void setup() {
         mono11 = loadFont("PTMono-Regular-11.vlw");
-        mono24 = loadFont("PTMono-Regular-24.vlw");
+        monoBig = createFont("Impact", bigFontSize, true);
         background(0);
         textFont(mono11);
+//
+//        String[] fontNames = PFont.list();
+//        for (int i = 0; i < fontNames.length; i++) {
+//            System.out.println(fontNames[i]);
+//        }
 
         analyzer = Analyzer.Options.forSketch(this)
                 .soundFile("Lense 5.wav")
@@ -232,62 +240,60 @@ public class SpinVerticalDriver extends PApplet {
             filter(blur);
         }
 
-        rotation += .2f;
+        rotationX += .001f;
+        rotationY += .001f;
+        rotationZ += .001f;
+
+        //cam.setRotations(rotationX, rotationY, rotationZ);
 
         cam.beginHUD();
         int yPos = 18;
+        int xPos = 20;
         textFont(mono11);
         textSize(11);
         fill(1, 0, 0, .3f);
-        rect(6, 6, 80, 180);
-
-        rect(98, 6, 30, 40);
+        rect(xPos - 5, yPos , 280, yPos * 5);
 
         fill(1, 0, 1, .5f);
-
         float[] lookAt = cam.getLookAt();
         String[] lookAtStrs = nfc(lookAt, 2);
-        text("lookAt: ", 10, yPos);
-        text(lookAtStrs[0], 10, 2 * yPos);
-        text(lookAtStrs[1], 10, 3 * yPos);
-        text(lookAtStrs[2], 10, 4 * yPos);
-
+        text("  center: " + join(lookAtStrs, ", "), xPos, 2 * yPos);
         float[] rotations = cam.getRotations();
         String[] rotationStrings = nfc(rotations, 2);
-        text("rotations: ", 10, 5 * yPos);
-        text(rotationStrings[0], 10, 6 * yPos);
-        text(rotationStrings[1], 10, 7 * yPos);
-        text(rotationStrings[2], 10, 8 * yPos);
+        text("rotation: " + join(rotationStrings, ", "), xPos, 3 * yPos);
+        // text("distance: " + nfc((float)cam.getDistance(), 2), 10, 7 * yPos);
 
-        text("distance: ", 10, 9 * yPos);
-        text(nfc((float)cam.getDistance(), 2), 10, 10 * yPos);
+        float powerScaled = analyzer.lowPowerSum * 100;
+        String s = String.valueOf(powerScaled);
+        if (s.length() < 4) {
+            s = "000" + s;
+        }
+        text("   power: " + s.substring(0, 4), xPos, 4 * yPos);
+        char i = parseChar(((int)random(0, 64) + 20));
+        text("  status: " + (hit ? "E" + ( random(0, 1) > .5f ? "X" : "R") + "R" + i + "R" : "-----"), xPos, 5 * yPos);
 
         if (logCoords) {
             lookAt = cam.getLookAt();
             lookAtStrs = nfc(lookAt, 2);
-
-            System.out.println("cam.lookAt(" + lookAtStrs[0] + ", " + lookAtStrs[1] + ","  + lookAtStrs[2] + ");");
-
             rotations = cam.getRotations();
             rotationStrings = nfc(rotations, 2);
+            System.out.println("cam.lookAt(" + lookAtStrs[0] + ", " + lookAtStrs[1] + ","  + lookAtStrs[2] + ");");
             System.out.println("cam.setRotations(" + rotationStrings[0] + ", " + rotationStrings[1] + ","  + rotationStrings[2] + ");");
-
             System.out.println("cam.setDistance(" + cam.getDistance() + ");");
 
             shots[shotIndex].go(cam);
+            rotationX = rotations[0];
+            rotationY = rotations[1];
+            rotationZ = rotations[2];
             logCoords = false;
         }
 
-        textFont(mono11);
-        textSize(11);
-
-        float num = analyzer.lowPowerSum * 100;
-        text(String.valueOf(num).substring(0, 4), 100, yPos);
-        text(hit ? "ACC" : "---", 100, 2 * yPos);
-
-        textFont(mono24);
-        textSize(36);
-        text("AFTXR", 140, 36);
+        if (hit) {
+            textFont(monoBig);
+            textSize(bigFontSize);
+            fill(1, .01f, 0, .05f);
+            text("AFTXR", 20, bigFontSize);
+        }
 
         cam.endHUD();
         // camera(xpos, ypos, zpos, 0, 0, 0, -1, -1, 0);
