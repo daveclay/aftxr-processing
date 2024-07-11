@@ -383,7 +383,6 @@ public class SpinVerticalDriver extends PApplet {
 
     @Override
     public void keyPressed() {
-        System.out.println(keyCode);
         if (keyCode == 67) {
             // 'c' key
             changeCamera = true;
@@ -397,6 +396,8 @@ public class SpinVerticalDriver extends PApplet {
         } else if (keyCode == 76) {
             // 'a' Key
             logCoords = true;
+        } else {
+            System.out.println(keyCode);
         }
     }
 }
