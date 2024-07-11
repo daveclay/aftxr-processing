@@ -36,6 +36,8 @@ public class SpinVerticalDriver extends PApplet {
     int bigFontSize = 500;
 
     boolean logCoords = false;
+    int glitch = 0;
+    boolean changeCamera = false;
     int shotIndex = 0;
 
     int totalFrames = 22500;
@@ -277,7 +279,15 @@ public class SpinVerticalDriver extends PApplet {
             float depth = lerp(1, 1000, power);
             translate(x / 2f, 0, (0 + depth / 2));
             float width = lerp(1000, 3000, power * 10);
-            box(barWidth, width, depth);
+            if (glitch > 0) {
+                box(barWidth * 100, width, depth);
+                glitch++;
+                if (glitch == 10000) {
+                    glitch = 0;
+                }
+            } else {
+                box(barWidth, width, depth);
+            }
             popMatrix();
         }
 
@@ -350,12 +360,15 @@ public class SpinVerticalDriver extends PApplet {
             System.out.println("cam.lookAt(" + lookAtStrs[0] + ", " + lookAtStrs[1] + ","  + lookAtStrs[2] + ");");
             System.out.println("cam.setRotations(" + rotationStrings[0] + ", " + rotationStrings[1] + ","  + rotationStrings[2] + ");");
             System.out.println("cam.setDistance(" + cam.getDistance() + ");");
+            logCoords = false;
+        }
 
+        if (changeCamera) {
             shots[shotIndex].go(cam);
             rotationX = rotations[0];
             rotationY = rotations[1];
             rotationZ = rotations[2];
-            logCoords = false;
+            changeCamera = false;
         }
 
         if (hit) {
@@ -370,13 +383,20 @@ public class SpinVerticalDriver extends PApplet {
 
     @Override
     public void keyPressed() {
-        if (keyCode == 65) {
-            // 'a' Key
-            logCoords = true;
+        System.out.println(keyCode);
+        if (keyCode == 67) {
+            // 'c' key
+            changeCamera = true;
             shotIndex++;
             if (shotIndex == shots.length) {
                 shotIndex = 0;
             }
+        } else if (keyCode == 88) {
+            // 'x' key
+            glitch = 1;
+        } else if (keyCode == 76) {
+            // 'a' Key
+            logCoords = true;
         }
     }
 }
